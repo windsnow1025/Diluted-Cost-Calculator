@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import pandas as pd
 import yfinance as yf
 
@@ -21,16 +19,12 @@ def fetch_prices(results: list[SymbolDilutedCost]) -> dict[str, float]:
 def fetch_price_history(
     transactions: list[Transaction],
 ) -> dict[str, list[dict[str, str | float]]]:
-    start_dates: dict[str, datetime] = {}
-    for tx in transactions:
-        date = tx.date if isinstance(tx.date, datetime) else datetime.strptime(tx.date, "%Y-%m-%d")
-        if tx.symbol not in start_dates or date < start_dates[tx.symbol]:
-            start_dates[tx.symbol] = date
+    symbols = {tx.symbol for tx in transactions}
 
     history: dict[str, list[dict[str, str | float]]] = {}
-    for symbol, start in start_dates.items():
+    for symbol in symbols:
         ticker = yf.Ticker(symbol)
-        df = ticker.history(start=start.strftime("%Y-%m-%d"))
+        df = ticker.history(period="max")
         rows: list[dict[str, str | float]] = []
         for ts, row in df.iterrows():
             assert isinstance(ts, pd.Timestamp)
