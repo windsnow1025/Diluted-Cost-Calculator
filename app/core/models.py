@@ -22,8 +22,8 @@ class Transaction:
 
 
 @dataclass
-class SymbolCost:
+class SymbolDilutedCost:
     symbol: str
     shares: float
-    net_cost: float
-    cost_per_share: float | None
+    net_diluted_cost: float
+    diluted_cost_per_share: float | None

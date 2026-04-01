@@ -4,12 +4,12 @@ from pathlib import Path
 
 import yfinance as yf
 
-from app.core.models import SymbolCost
+from app.core.models import SymbolDilutedCost
 
-Headers = ["Symbol", "Shares", "Net Cost", "Cost Per Share"]
+Headers = ["Symbol", "Shares", "Net Diluted Cost", "Diluted Cost Per Share"]
 
 
-def write_output(results: list[SymbolCost], file_path: Path) -> None:
+def write_output(results: list[SymbolDilutedCost], file_path: Path) -> None:
     with open(file_path, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(Headers)
@@ -17,12 +17,12 @@ def write_output(results: list[SymbolCost], file_path: Path) -> None:
             writer.writerow([
                 result.symbol,
                 result.shares,
-                result.net_cost,
-                result.cost_per_share if result.cost_per_share is not None else "",
+                result.net_diluted_cost,
+                result.diluted_cost_per_share if result.diluted_cost_per_share is not None else "",
             ])
 
 
-def write_prices(results: list[SymbolCost], file_path: Path) -> None:
+def write_prices(results: list[SymbolDilutedCost], file_path: Path) -> None:
     symbols = [r.symbol for r in results if r.shares > 0]
     tickers = yf.Tickers(" ".join(symbols))
     prices: dict[str, float] = {}
