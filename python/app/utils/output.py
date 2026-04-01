@@ -2,8 +2,7 @@ import csv
 import json
 from dataclasses import asdict
 from pathlib import Path
-
-import yfinance as yf
+from typing import Any
 
 from app.core.models import SymbolDilutedCost, Transaction
 
@@ -33,28 +32,19 @@ def _camel_case_dict(d: dict) -> dict:
     return {_to_camel_case(k): v for k, v in d.items()}
 
 
-def write_diluted_cost(results: list[SymbolDilutedCost], file_path: Path) -> None:
+def write_json(data: Any, file_path: Path) -> None:
     file_path.parent.mkdir(parents=True, exist_ok=True)
     with open(file_path, "w") as f:
-        json.dump([_camel_case_dict(asdict(r)) for r in results], f, indent=2)
+        json.dump(data, f, indent=2, default=str)
+
+
+def write_diluted_cost(results: list[SymbolDilutedCost], file_path: Path) -> None:
+    write_json([_camel_case_dict(asdict(r)) for r in results], file_path)
 
 
 def write_transactions(transactions: list[Transaction], file_path: Path) -> None:
-    file_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(file_path, "w") as f:
-        json.dump([asdict(tx) for tx in transactions], f, indent=2, default=str)
+    write_json([_camel_case_dict(asdict(tx)) for tx in transactions], file_path)
 
 
-def write_prices(results: list[SymbolDilutedCost], file_path: Path) -> None:
-    symbols = [r.symbol for r in results if r.shares > 0]
-    tickers = yf.Tickers(" ".join(symbols))
-    prices: dict[str, float] = {}
-    for symbol in symbols:
-        info = tickers.tickers[symbol].info
-        price = info.get("regularMarketPrice") or info.get("currentPrice")
-        if price is not None:
-            prices[symbol] = price
-
-    file_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(file_path, "w") as f:
-        json.dump(prices, f, indent=2)
+def write_prices(prices: dict[str, float], file_path: Path) -> None:
+    write_json(prices, file_path)
