@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
 import {activeHoldings} from "../lib/portfolio/PortfolioService";
 import {fmtDollar, fmtPct, pnlColor} from "../lib/format";
+import SymbolCell from "./SymbolCell";
 
 function ActiveHoldings() {
   const holdings = activeHoldings;
@@ -34,7 +35,7 @@ function ActiveHoldings() {
             <TableBody>
               {holdings.map((h) => (
                 <TableRow key={h.symbol} hover>
-                  <TableCell sx={{fontWeight: 600}}>{h.symbol}</TableCell>
+                  <SymbolCell symbol={h.symbol} />
                   <TableCell align="right">{h.shares}</TableCell>
                   <TableCell align="right" sx={{color: pnlColor(h.pnlPct)}}>
                     {fmtPct(h.pnlPct)}

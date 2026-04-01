@@ -9,6 +9,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import {closedPositions} from "../lib/portfolio/PortfolioService";
 import {fmtDollar, pnlColor} from "../lib/format";
+import SymbolCell from "./SymbolCell";
 
 function ClosedPositions() {
   const positions = closedPositions;
@@ -28,7 +29,7 @@ function ClosedPositions() {
             <TableBody>
               {positions.map((p) => (
                 <TableRow key={p.symbol} hover>
-                  <TableCell sx={{fontWeight: 600}}>{p.symbol}</TableCell>
+                  <SymbolCell symbol={p.symbol} />
                   <TableCell align="right" sx={{color: pnlColor(p.realizedPnl)}}>
                     {fmtDollar(p.realizedPnl)}
                   </TableCell>
