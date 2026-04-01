@@ -1,10 +1,11 @@
 import csv
 import json
+from dataclasses import asdict
 from pathlib import Path
 
 import yfinance as yf
 
-from app.core.models import SymbolDilutedCost
+from app.core.models import SymbolDilutedCost, Transaction
 
 Headers = ["Symbol", "Shares", "Net Diluted Cost", "Diluted Cost Per Share"]
 
@@ -21,6 +22,12 @@ def write_output(results: list[SymbolDilutedCost], file_path: Path) -> None:
                 result.net_diluted_cost,
                 result.diluted_cost_per_share if result.diluted_cost_per_share is not None else "",
             ])
+
+
+def write_transactions(transactions: list[Transaction], file_path: Path) -> None:
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(file_path, "w") as f:
+        json.dump([asdict(tx) for tx in transactions], f, indent=2, default=str)
 
 
 def write_prices(results: list[SymbolDilutedCost], file_path: Path) -> None:
