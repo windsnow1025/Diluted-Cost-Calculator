@@ -1,3 +1,4 @@
+import {useState} from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -10,9 +11,11 @@ import Typography from "@mui/material/Typography";
 import {closedPositions} from "../lib/portfolio/PortfolioService";
 import {fmtDollar, pnlColor} from "../lib/format";
 import SymbolCell from "./SymbolCell";
+import SymbolChartDialog from "./SymbolChartDialog";
 
 function ClosedPositions() {
   const positions = closedPositions;
+  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
 
   return (
     <Card variant="outlined">
@@ -29,7 +32,7 @@ function ClosedPositions() {
             <TableBody>
               {positions.map((p) => (
                 <TableRow key={p.symbol} hover>
-                  <SymbolCell symbol={p.symbol} />
+                  <SymbolCell symbol={p.symbol} onClick={setSelectedSymbol} />
                   <TableCell align="right" sx={{color: pnlColor(p.realizedPnl)}}>
                     {fmtDollar(p.realizedPnl)}
                   </TableCell>
@@ -39,6 +42,7 @@ function ClosedPositions() {
           </Table>
         </TableContainer>
       </CardContent>
+      <SymbolChartDialog symbol={selectedSymbol} onClose={() => setSelectedSymbol(null)} />
     </Card>
   );
 }

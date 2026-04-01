@@ -1,3 +1,4 @@
+import {useState} from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,9 +12,11 @@ import LinearProgress from "@mui/material/LinearProgress";
 import {activeHoldings} from "../lib/portfolio/PortfolioService";
 import {fmtDollar, fmtPct, pnlColor} from "../lib/format";
 import SymbolCell from "./SymbolCell";
+import SymbolChartDialog from "./SymbolChartDialog";
 
 function ActiveHoldings() {
   const holdings = activeHoldings;
+  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
 
   return (
     <Card variant="outlined">
@@ -35,7 +38,7 @@ function ActiveHoldings() {
             <TableBody>
               {holdings.map((h) => (
                 <TableRow key={h.symbol} hover>
-                  <SymbolCell symbol={h.symbol} />
+                  <SymbolCell symbol={h.symbol} onClick={setSelectedSymbol} />
                   <TableCell align="right">{h.shares}</TableCell>
                   <TableCell align="right" sx={{color: pnlColor(h.pnlPct)}}>
                     {fmtPct(h.pnlPct)}
@@ -70,6 +73,7 @@ function ActiveHoldings() {
           </Table>
         </TableContainer>
       </CardContent>
+      <SymbolChartDialog symbol={selectedSymbol} onClose={() => setSelectedSymbol(null)} />
     </Card>
   );
 }

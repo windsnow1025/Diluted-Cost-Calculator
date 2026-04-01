@@ -26,3 +26,26 @@ export interface PortfolioSummary {
   totalPnl: number;
   totalPnlPct: number;
 }
+
+export enum TransactionType {
+  Trades = "Trades",
+  Dividends = "Dividends",
+}
+
+export interface Transaction {
+  date: string;
+  platform: string;
+  type: TransactionType;
+  symbol: string;
+  quantity: number | null;
+  price: number | null;
+  amount: number;
+  fees: number;
+  taxWithholding: number;
+  netAmount: number;
+}
+
+export interface PricePoint {
+  date: string;
+  close: number;
+}
