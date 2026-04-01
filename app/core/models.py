@@ -14,7 +14,7 @@ class Transaction:
     type: TransactionType
     symbol: str
     quantity: float | None
-    trade_price: float | None
+    price: float | None
     amount: float
     fees: float
     tax_withholding: float

@@ -10,7 +10,7 @@ FieldMapping: dict[str, str] = {
     "Type": "type",
     "Symbol": "symbol",
     "Quantity": "quantity",
-    "T. Price": "trade_price",
+    "Price": "price",
     "Amount": "amount",
     "Fees & Comm": "fees",
     "Tax Withholding": "tax_withholding",
