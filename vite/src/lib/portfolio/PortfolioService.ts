@@ -1,0 +1,50 @@
+import type {ActiveHolding, ClosedPosition, PortfolioRow, PortfolioSummary} from "./Portfolio";
+import csvText from "../../data/Portfolio Diluted Cost.csv?raw";
+import prices from "../../data/prices.json";
+
+const priceMap = prices as Record<string, number>;
+
+function parseCsv(text: string): PortfolioRow[] {
+  const lines = text.trim().split("\n");
+  return lines.slice(1).map((line) => {
+    const [symbol, shares, netDilutedCost, dilutedCostPerShare] = line.split(",");
+    return {
+      symbol: symbol,
+      shares: parseFloat(shares),
+      netDilutedCost: parseFloat(netDilutedCost),
+      dilutedCostPerShare: dilutedCostPerShare !== "" ? parseFloat(dilutedCostPerShare) : null,
+    };
+  });
+}
+
+const rows = parseCsv(csvText);
+const activeRows = rows.filter((r) => r.shares > 0);
+const closedRows = rows.filter((r) => r.shares === 0);
+
+const totalMktValue = activeRows.reduce((sum, r) => sum + priceMap[r.symbol] * r.shares, 0);
+const totalDilutedCost = activeRows.reduce((s, r) => s + r.netDilutedCost, 0);
+const totalPnl = totalMktValue - totalDilutedCost;
+
+export const activeHoldings: ActiveHolding[] = activeRows
+  .map((r) => {
+    const price = priceMap[r.symbol];
+    const mktValue = price * r.shares;
+    const pnl = mktValue - r.netDilutedCost;
+    const pnlPct = (pnl / r.netDilutedCost) * 100;
+    const weight = (mktValue / totalMktValue) * 100;
+    return {...r, price, mktValue, pnl, pnlPct, weight};
+  })
+  .sort((a, b) => b.mktValue - a.mktValue || a.symbol.localeCompare(b.symbol));
+
+export const closedPositions: ClosedPosition[] = closedRows
+  .map((r) => ({symbol: r.symbol, realizedPnl: -r.netDilutedCost}))
+  .sort((a, b) => b.realizedPnl - a.realizedPnl || a.symbol.localeCompare(b.symbol));
+
+export const summary: PortfolioSummary = {
+  activeCount: activeRows.length,
+  closedCount: closedRows.length,
+  totalDilutedCost,
+  totalMktValue,
+  totalPnl,
+  totalPnlPct: (totalPnl / totalDilutedCost) * 100,
+};
