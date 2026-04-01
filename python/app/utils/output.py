@@ -10,6 +10,7 @@ Headers = ["Symbol", "Shares", "Net Diluted Cost", "Diluted Cost Per Share"]
 
 
 def write_output(results: list[SymbolDilutedCost], file_path: Path) -> None:
+    file_path.parent.mkdir(parents=True, exist_ok=True)
     with open(file_path, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(Headers)
@@ -32,5 +33,6 @@ def write_prices(results: list[SymbolDilutedCost], file_path: Path) -> None:
         if price is not None:
             prices[symbol] = price
 
+    file_path.parent.mkdir(parents=True, exist_ok=True)
     with open(file_path, "w") as f:
         json.dump(prices, f, indent=2)
