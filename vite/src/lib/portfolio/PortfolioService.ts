@@ -1,23 +1,10 @@
 import type {ActiveHolding, ClosedPosition, PortfolioRow, PortfolioSummary} from "./Portfolio";
-import csvText from "../../data/Portfolio Diluted Cost.csv?raw";
+import dilutedCost from "../../data/diluted_cost.json";
 import prices from "../../data/prices.json";
 
 const priceMap = prices as Record<string, number>;
+const rows = dilutedCost as PortfolioRow[];
 
-function parseCsv(text: string): PortfolioRow[] {
-  const lines = text.trim().split("\n");
-  return lines.slice(1).map((line) => {
-    const [symbol, shares, netDilutedCost, dilutedCostPerShare] = line.split(",");
-    return {
-      symbol: symbol,
-      shares: parseFloat(shares),
-      netDilutedCost: parseFloat(netDilutedCost),
-      dilutedCostPerShare: dilutedCostPerShare !== "" ? parseFloat(dilutedCostPerShare) : null,
-    };
-  });
-}
-
-const rows = parseCsv(csvText);
 const activeRows = rows.filter((r) => r.shares > 0);
 const closedRows = rows.filter((r) => r.shares === 0);
 

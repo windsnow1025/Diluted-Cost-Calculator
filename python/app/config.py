@@ -1,9 +1,16 @@
+import os
 from pathlib import Path
 
-ProjectRoot = Path(__file__).resolve().parent.parent
-DataDir = ProjectRoot / "data"
-OutputDir = ProjectRoot.parent / "vite" / "src" / "data"
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DataDir = Path(os.environ["DATA_DIR"])
 InputFile = DataDir / "Trading History.xlsx"
-OutputFile = OutputDir / "Portfolio Diluted Cost.csv"
+OutputFile = DataDir / "Diluted Cost.csv"
+
+ProjectRoot = Path(__file__).resolve().parent.parent
+OutputDir = ProjectRoot.parent / "vite" / "src" / "data"
+DilutedCostFile = OutputDir / "diluted_cost.json"
 TransactionsFile = OutputDir / "transactions.json"
 PricesFile = OutputDir / "prices.json"
