@@ -22,7 +22,12 @@ def adjust_for_splits(transactions: list[Transaction]) -> list[Transaction]:
             adjusted.append(tx)
             continue
 
-        tx_date = tx.date if isinstance(tx.date, datetime) else datetime.strptime(tx.date, "%Y-%m-%d")
+        if isinstance(tx.date, datetime):
+            tx_date = tx.date
+            date_str = tx.date.strftime("%Y-%m-%d")
+        else:
+            tx_date = datetime.strptime(tx.date, "%Y-%m-%d")
+            date_str = tx.date
         splits = split_data[tx.symbol]
 
         multiplier = 1.0
@@ -32,7 +37,7 @@ def adjust_for_splits(transactions: list[Transaction]) -> list[Transaction]:
                 multiplier *= ratio
 
         adjusted.append(Transaction(
-            date=tx.date,
+            date=date_str,
             platform=tx.platform,
             type=tx.type,
             symbol=tx.symbol,
