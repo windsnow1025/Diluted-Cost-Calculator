@@ -10,10 +10,9 @@ export function adjustForSplits(
     const splits = splitsBySymbol[tx.symbol];
     if (!splits) return tx;
 
-    const txDate = tx.date.split(" ")[0];
     let multiplier = 1;
     for (const split of splits) {
-      if (split.date > txDate) {
+      if (split.date > tx.date) {
         multiplier *= split.ratio;
       }
     }
