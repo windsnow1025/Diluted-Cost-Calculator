@@ -7,8 +7,7 @@ load_dotenv()
 
 DataDir = Path(os.environ["DATA_DIR"])
 InputFile = DataDir / "Trading History.xlsx"
-OutputFile = DataDir / "Diluted Cost.csv"
 
 ProjectRoot = Path(__file__).resolve().parent.parent
 OutputDir = ProjectRoot.parent / "vite" / "src" / "data"
-TransactionsFile = OutputDir / "transactions.json"
+TransactionsRawFile = OutputDir / "transactions_raw.json"

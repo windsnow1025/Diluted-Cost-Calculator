@@ -1,4 +1,5 @@
-import type {ActiveHolding, ClosedPosition, PricePoint, PortfolioRow, PortfolioSummary, Transaction} from "./Portfolio";
+import type {ActiveHolding, ClosedPosition, PortfolioRow, PortfolioSummary, Transaction} from "./Portfolio";
+import type {PricePoint} from "../prices/PriceClient";
 import dilutedCost from "../../data/diluted_cost.json";
 import priceHistory from "../../data/price_history.json";
 import prices from "../../data/prices.json";

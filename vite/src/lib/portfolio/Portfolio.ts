@@ -47,7 +47,3 @@ export interface Transaction {
   netAmount: number;
 }
 
-export interface PricePoint {
-  date: string;
-  close: number;
-}

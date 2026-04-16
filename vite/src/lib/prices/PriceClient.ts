@@ -1,7 +1,11 @@
 import YahooFinance from "yahoo-finance2";
-import type {PricePoint} from "../portfolio/Portfolio";
 
 const yahooFinance = new YahooFinance({ suppressNotices: ['yahooSurvey'] });
+
+export interface PricePoint {
+  date: string;
+  close: number;
+}
 
 export async function fetchPrices(symbols: string[]): Promise<Record<string, number>> {
   const quotes = await yahooFinance.quote(symbols);
