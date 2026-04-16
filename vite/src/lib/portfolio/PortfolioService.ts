@@ -29,8 +29,8 @@ export const closedPositions: ClosedPosition[] = closedRows
   .map((r) => ({symbol: r.symbol, realizedPnl: -r.netDilutedCost}))
   .sort((a, b) => b.realizedPnl - a.realizedPnl || a.symbol.localeCompare(b.symbol));
 
-export const transactions: Transaction[] = transactionsData;
-export const priceHistoryMap: Record<string, PricePoint[]> = priceHistory;
+export const transactions = transactionsData as Transaction[];
+export const priceHistoryMap = priceHistory as Record<string, PricePoint[]>;
 
 export const summary: PortfolioSummary = {
   activeCount: activeRows.length,

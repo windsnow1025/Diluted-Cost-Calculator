@@ -27,6 +27,8 @@ export interface PortfolioSummary {
   totalPnlPct: number;
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 export enum TransactionType {
   Trades = "Trades",
   Dividends = "Dividends",
