@@ -13,5 +13,3 @@ ProjectRoot = Path(__file__).resolve().parent.parent
 OutputDir = ProjectRoot.parent / "vite" / "src" / "data"
 DilutedCostFile = OutputDir / "diluted_cost.json"
 TransactionsFile = OutputDir / "transactions.json"
-PricesFile = OutputDir / "prices.json"
-PriceHistoryFile = OutputDir / "price_history.json"
