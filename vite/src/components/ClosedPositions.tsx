@@ -9,7 +9,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import {closedPositions} from "../lib/portfolio/PortfolioService";
-import {fmtDollar, pnlColor} from "../lib/format";
+import {fmtDollar, pnlColor} from "../lib/utils/format";
 import SymbolCell from "./SymbolCell";
 import SymbolChartDialog from "./SymbolChartDialog";
 

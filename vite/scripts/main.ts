@@ -9,6 +9,7 @@ const DataDir = resolve(import.meta.dirname, "../src/data");
 const DilutedCostFile = resolve(DataDir, "diluted_cost.json");
 const PricesFile = resolve(DataDir, "prices.json");
 const PriceHistoryFile = resolve(DataDir, "price_history.json");
+const MetadataFile = resolve(DataDir, "metadata.json");
 
 async function main(): Promise<void> {
   const transactions = transactionsData as Transaction[];
@@ -23,6 +24,7 @@ async function main(): Promise<void> {
 
   writeFileSync(PricesFile, JSON.stringify(prices, null, 2));
   writeFileSync(PriceHistoryFile, JSON.stringify(priceHistory, null, 2));
+  writeFileSync(MetadataFile, JSON.stringify({generatedAt: new Date().toISOString()}, null, 2));
 }
 
 await main();

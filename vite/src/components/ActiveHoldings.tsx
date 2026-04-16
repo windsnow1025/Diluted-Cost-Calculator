@@ -10,7 +10,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
 import {activeHoldings} from "../lib/portfolio/PortfolioService";
-import {fmtDollar, fmtPct, pnlColor} from "../lib/format";
+import {fmtDollar, fmtPct, pnlColor} from "../lib/utils/format";
 import SymbolCell from "./SymbolCell";
 import SymbolChartDialog from "./SymbolChartDialog";
 

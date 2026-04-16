@@ -9,6 +9,8 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import SummaryCards from "./components/SummaryCards";
 import ActiveHoldings from "./components/ActiveHoldings";
 import ClosedPositions from "./components/ClosedPositions";
+import metadata from "./data/metadata.json";
+import {fmtRelativeTime} from "./lib/utils/format";
 
 const themeCycle = ["system", "dark", "light"] as const;
 
@@ -52,6 +54,13 @@ function App() {
       <div className="flex-column gap-4 py-6">
         <Typography variant="h4" component="h1" sx={{fontWeight: 700}}>
           Portfolio Diluted Cost
+        </Typography>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          title={new Date(metadata.generatedAt).toLocaleString()}
+        >
+          Prices updated {fmtRelativeTime(metadata.generatedAt)}
         </Typography>
         <SummaryCards/>
         <ActiveHoldings/>

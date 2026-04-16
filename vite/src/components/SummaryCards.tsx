@@ -2,7 +2,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import {summary} from "../lib/portfolio/PortfolioService";
-import {fmtDollar, fmtPct, pnlColor} from "../lib/format";
+import {fmtDollar, fmtPct, pnlColor} from "../lib/utils/format";
 
 const hoverSx = {transition: "border-color 0.2s", "&:hover": {borderColor: "text.primary"}};
 
