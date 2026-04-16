@@ -1,15 +1,20 @@
 import {writeFileSync} from "node:fs";
 import {resolve} from "node:path";
-import dilutedCost from "../src/data/diluted_cost.json";
+import transactionsData from "../src/data/transactions.json";
+import {calculateDilutedCosts} from "../src/lib/portfolio/Calculator";
+import type {Transaction} from "../src/lib/portfolio/Portfolio";
 import {fetchPrices, fetchPriceHistory} from "../src/lib/prices/PriceClient";
-import type {PortfolioRow} from "../src/lib/portfolio/Portfolio";
 
 const DataDir = resolve(import.meta.dirname, "../src/data");
+const DilutedCostFile = resolve(DataDir, "diluted_cost.json");
 const PricesFile = resolve(DataDir, "prices.json");
 const PriceHistoryFile = resolve(DataDir, "price_history.json");
 
 async function main(): Promise<void> {
-  const rows = dilutedCost as PortfolioRow[];
+  const transactions = transactionsData as Transaction[];
+  const rows = calculateDilutedCosts(transactions);
+  writeFileSync(DilutedCostFile, JSON.stringify(rows, null, 2));
+
   const allSymbols = rows.map((r) => r.symbol);
   const activeSymbols = rows.filter((r) => r.shares > 0).map((r) => r.symbol);
 

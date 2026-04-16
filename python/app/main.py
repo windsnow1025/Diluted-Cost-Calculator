@@ -1,5 +1,4 @@
 from app.config import (
-    DilutedCostFile,
     InputFile,
     OutputFile,
     TransactionsFile,
@@ -15,7 +14,6 @@ def main() -> None:
     transactions = adjust_for_splits(transactions)
     results = calculate_diluted_costs(transactions)
     write_csv(results, OutputFile)
-    write_json(results, DilutedCostFile)
     write_json(transactions, TransactionsFile)
 
 
