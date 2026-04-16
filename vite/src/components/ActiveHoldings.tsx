@@ -15,7 +15,6 @@ import SymbolCell from "./SymbolCell";
 import SymbolChartDialog from "./SymbolChartDialog";
 
 function ActiveHoldings() {
-  const holdings = activeHoldings;
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
 
   return (
@@ -36,7 +35,7 @@ function ActiveHoldings() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {holdings.map((h) => (
+              {activeHoldings.map((h) => (
                 <TableRow key={h.symbol} hover>
                   <SymbolCell symbol={h.symbol} onClick={setSelectedSymbol} />
                   <TableCell align="right">{h.shares}</TableCell>

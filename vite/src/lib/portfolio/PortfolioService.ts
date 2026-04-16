@@ -11,7 +11,7 @@ const activeRows = rows.filter((r) => r.shares > 0);
 const closedRows = rows.filter((r) => r.shares === 0);
 
 const totalMktValue = activeRows.reduce((sum, r) => sum + priceMap[r.symbol] * r.shares, 0);
-const totalDilutedCost = activeRows.reduce((s, r) => s + r.netDilutedCost, 0);
+const totalDilutedCost = activeRows.reduce((sum, r) => sum + r.netDilutedCost, 0);
 const totalPnl = totalMktValue - totalDilutedCost;
 
 export const activeHoldings: ActiveHolding[] = activeRows

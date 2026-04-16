@@ -14,13 +14,12 @@ import SymbolCell from "./SymbolCell";
 import SymbolChartDialog from "./SymbolChartDialog";
 
 function ClosedPositions() {
-  const positions = closedPositions;
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
 
   return (
     <Card variant="outlined">
       <CardContent>
-        <Typography variant="h6" sx={{mb: 2}}>Closed Positions ({positions.length})</Typography>
+        <Typography variant="h6" sx={{mb: 2}}>Closed Positions ({closedPositions.length})</Typography>
         <TableContainer>
           <Table size="small">
             <TableHead>
@@ -30,7 +29,7 @@ function ClosedPositions() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {positions.map((p) => (
+              {closedPositions.map((p) => (
                 <TableRow key={p.symbol} hover>
                   <SymbolCell symbol={p.symbol} onClick={setSelectedSymbol} />
                   <TableCell align="right" sx={{color: pnlColor(p.realizedPnl)}}>
