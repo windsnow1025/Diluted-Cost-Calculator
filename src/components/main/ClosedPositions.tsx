@@ -15,11 +15,17 @@ import SymbolChartDialog from "./SymbolChartDialog.tsx";
 
 function ClosedPositions() {
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
+  const totalRealizedPnl = closedPositions.reduce((sum, p) => sum + p.realizedPnl, 0);
 
   return (
     <Card variant="outlined">
       <CardContent>
-        <Typography variant="h6" sx={{mb: 2}}>Closed Positions ({closedPositions.length})</Typography>
+        <div className="flex items-baseline justify-between mb-2">
+          <Typography variant="h6">Closed Positions ({closedPositions.length})</Typography>
+          <Typography variant="subtitle1" sx={{fontWeight: 600, color: pnlColor(totalRealizedPnl)}}>
+            {fmtDollar(totalRealizedPnl)}
+          </Typography>
+        </div>
         <TableContainer>
           <Table size="small">
             <TableHead>
