@@ -3,11 +3,13 @@ import {resolve} from "node:path";
 import transactionsData from "../src/data/transactions_raw.json";
 import {calculateDilutedCosts} from "../src/lib/portfolio/Calculator";
 import type {Transaction} from "../src/lib/portfolio/Portfolio";
+import {sortTransactions} from "../src/lib/portfolio/TransactionSort";
 import {fetchPrices, fetchPriceHistory} from "../src/lib/prices/PriceClient";
 import {adjustForSplits} from "../src/lib/splits/Adjuster";
 import {fetchSplits} from "../src/lib/splits/SplitsClient";
 
 const DataDir = resolve(import.meta.dirname, "../src/data");
+const RawTransactionsFile = resolve(DataDir, "transactions_raw.json");
 const TransactionsFile = resolve(DataDir, "transactions.json");
 const DilutedCostFile = resolve(DataDir, "diluted_cost.json");
 const PricesFile = resolve(DataDir, "prices.json");
@@ -15,7 +17,8 @@ const PriceHistoryFile = resolve(DataDir, "price_history.json");
 const MetadataFile = resolve(DataDir, "metadata.json");
 
 async function main(): Promise<void> {
-  const rawTransactions = transactionsData as Transaction[];
+  const rawTransactions = sortTransactions(transactionsData as Transaction[]);
+  writeFileSync(RawTransactionsFile, JSON.stringify(rawTransactions, null, 2));
   const allSymbols = [...new Set(rawTransactions.map((tx) => tx.symbol))];
 
   const splitsBySymbol = await fetchSplits(allSymbols);
