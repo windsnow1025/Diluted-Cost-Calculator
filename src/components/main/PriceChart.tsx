@@ -9,8 +9,8 @@ import {
   type Time
 } from "lightweight-charts";
 import {useColorScheme, useTheme} from "@mui/material/styles";
-import {type Transaction, TransactionType} from "../lib/portfolio/Portfolio";
-import type {PricePoint} from "../lib/prices/PriceClient";
+import {type Transaction, TransactionType} from "../../lib/portfolio/Portfolio.ts";
+import type {PricePoint} from "../../lib/prices/PriceClient.ts";
 
 function PriceChart({priceHistory, transactions}: {priceHistory: PricePoint[]; transactions: Transaction[]}) {
   const containerRef = useRef<HTMLDivElement>(null);

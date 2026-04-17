@@ -9,10 +9,10 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
-import {activeHoldings} from "../lib/portfolio/PortfolioService";
-import {fmtDollar, fmtPct, pnlColor} from "../lib/utils/format";
-import SymbolCell from "./SymbolCell";
-import SymbolChartDialog from "./SymbolChartDialog";
+import {activeHoldings} from "../../lib/portfolio/PortfolioService.ts";
+import {fmtDollar, fmtPct, pnlColor} from "../../lib/utils/format.ts";
+import SymbolCell from "./SymbolCell.tsx";
+import SymbolChartDialog from "./SymbolChartDialog.tsx";
 
 function ActiveHoldings() {
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);

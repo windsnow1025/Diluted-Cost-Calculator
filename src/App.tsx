@@ -1,51 +1,11 @@
 import Container from "@mui/material/Container";
-import IconButton from "@mui/material/IconButton";
-import {useColorScheme} from "@mui/material/styles";
-import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import ContrastIcon from "@mui/icons-material/Contrast";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import SummaryCards from "./components/SummaryCards";
-import ActiveHoldings from "./components/ActiveHoldings";
-import ClosedPositions from "./components/ClosedPositions";
+import SummaryCards from "./components/main/SummaryCards.tsx";
+import ActiveHoldings from "./components/main/ActiveHoldings.tsx";
+import ClosedPositions from "./components/main/ClosedPositions.tsx";
+import ThemeSwitch from "./components/common/ThemeSwitch.tsx";
 import metadata from "./data/metadata.json";
 import {fmtRelativeTime} from "./lib/utils/format";
-
-const themeCycle = ["system", "dark", "light"] as const;
-
-function ThemeSwitch() {
-  const {mode, setMode} = useColorScheme();
-
-  const nextMode = () => {
-    const currentIndex = themeCycle.indexOf(mode ?? "system");
-    const next = themeCycle[(currentIndex + 1) % themeCycle.length];
-    setMode(next);
-  };
-
-  const icon = mode === "dark"
-    ? <DarkModeIcon/>
-    : mode === "light"
-      ? <LightModeIcon/>
-      : <ContrastIcon/>;
-
-  const label = mode === "dark"
-    ? "Dark"
-    : mode === "light"
-      ? "Light"
-      : "System";
-
-  return (
-    <Tooltip title={`Theme: ${label}`}>
-      <IconButton
-        onClick={nextMode}
-        sx={{position: "fixed", top: 16, right: 16, zIndex: 1}}
-      >
-        {icon}
-      </IconButton>
-    </Tooltip>
-  );
-}
 
 function App() {
   return (

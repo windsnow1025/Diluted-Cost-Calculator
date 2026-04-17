@@ -8,10 +8,10 @@ import TableRow from "@mui/material/TableRow";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import {closedPositions} from "../lib/portfolio/PortfolioService";
-import {fmtDollar, pnlColor} from "../lib/utils/format";
-import SymbolCell from "./SymbolCell";
-import SymbolChartDialog from "./SymbolChartDialog";
+import {closedPositions} from "../../lib/portfolio/PortfolioService.ts";
+import {fmtDollar, pnlColor} from "../../lib/utils/format.ts";
+import SymbolCell from "./SymbolCell.tsx";
+import SymbolChartDialog from "./SymbolChartDialog.tsx";
 
 function ClosedPositions() {
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
