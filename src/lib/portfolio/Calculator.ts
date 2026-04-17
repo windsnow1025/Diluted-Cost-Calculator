@@ -25,11 +25,11 @@ export function calculateDilutedCosts(transactions: Transaction[]): PortfolioRow
   const results: PortfolioRow[] = [];
   for (const symbol of [...symbols.keys()].sort()) {
     const acc = symbols.get(symbol)!;
-    const dilutedCostPerShare = acc.shares !== 0 ? +(acc.netDilutedCost / acc.shares).toFixed(2) : null;
+    const dilutedCostPerShare = acc.shares !== 0 ? acc.netDilutedCost / acc.shares : null;
     results.push({
       symbol: symbol,
       shares: acc.shares,
-      netDilutedCost: +acc.netDilutedCost.toFixed(2),
+      netDilutedCost: acc.netDilutedCost,
       dilutedCostPerShare: dilutedCostPerShare,
     });
   }

@@ -28,7 +28,7 @@ export async function fetchPriceHistory(
       .filter((q) => q.close !== null)
       .map((q) => ({
         date: q.date.toISOString().slice(0, 10),
-        close: +q.close!.toFixed(2),
+        close: q.close!,
       }));
   }
   return history;
