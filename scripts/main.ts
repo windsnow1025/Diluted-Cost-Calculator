@@ -2,7 +2,8 @@ import {writeFileSync} from "node:fs";
 import {resolve} from "node:path";
 import transactionsData from "../src/data/transactions_raw.json";
 import {calculateDilutedCosts} from "../src/lib/portfolio/Calculator";
-import type {Transaction} from "../src/lib/portfolio/Portfolio";
+import type {RawTransaction} from "../src/lib/portfolio/Portfolio";
+import {normalizeTransaction} from "../src/lib/portfolio/TransactionNormalize";
 import {sortTransactions} from "../src/lib/portfolio/TransactionSort";
 import {fetchPrices, fetchPriceHistory} from "../src/lib/prices/PriceClient";
 import {adjustForSplits} from "../src/lib/splits/Adjuster";
@@ -17,12 +18,12 @@ const PriceHistoryFile = resolve(DataDir, "price_history.json");
 const MetadataFile = resolve(DataDir, "metadata.json");
 
 async function main(): Promise<void> {
-  const rawTransactions = sortTransactions(transactionsData as Transaction[]);
+  const rawTransactions = sortTransactions(transactionsData as RawTransaction[]);
   writeFileSync(RawTransactionsFile, JSON.stringify(rawTransactions, null, 2));
   const allSymbols = [...new Set(rawTransactions.map((tx) => tx.symbol))];
 
   const splitsBySymbol = await fetchSplits(allSymbols);
-  const transactions = adjustForSplits(rawTransactions, splitsBySymbol);
+  const transactions = adjustForSplits(rawTransactions.map(normalizeTransaction), splitsBySymbol);
   writeFileSync(TransactionsFile, JSON.stringify(transactions, null, 2));
 
   const rows = calculateDilutedCosts(transactions);

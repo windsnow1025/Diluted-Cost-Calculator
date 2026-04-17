@@ -39,11 +39,23 @@ export interface Transaction {
   platform: string;
   type: TransactionType;
   symbol: string;
-  quantity: number | null;
-  price: number | null;
+  quantity?: number;
+  price?: number;
   amount: number;
   fees: number;
   taxWithholding: number;
   netAmount: number;
+}
+
+export interface RawTransaction {
+  date: string;
+  platform: string;
+  type: TransactionType;
+  symbol: string;
+  quantity?: number;
+  price?: number;
+  amount?: number;
+  fees: number;
+  taxWithholding: number;
 }
 

@@ -49,7 +49,7 @@ function PriceChart({priceHistory, transactions}: {priceHistory: PricePoint[]; t
     );
 
     const markers: SeriesMarker<Time>[] = transactions
-      .filter((tx) => tx.type === TransactionType.Trades && tx.quantity !== null)
+      .filter((tx) => tx.type === TransactionType.Trades && tx.quantity !== undefined)
       .map((tx) => {
         const isBuy = tx.quantity! > 0;
         return {

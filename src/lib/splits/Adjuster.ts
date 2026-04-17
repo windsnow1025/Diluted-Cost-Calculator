@@ -19,8 +19,8 @@ export function adjustForSplits(
 
     return {
       ...tx,
-      quantity: tx.quantity !== null ? tx.quantity * multiplier : null,
-      price: tx.price !== null ? tx.price / multiplier : null,
+      quantity: tx.quantity !== undefined ? tx.quantity * multiplier : undefined,
+      price: tx.price !== undefined ? tx.price / multiplier : undefined,
     };
   });
 }
