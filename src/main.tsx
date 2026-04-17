@@ -6,6 +6,7 @@ import './global.css'
 import App from './App.tsx'
 
 const theme = createTheme({
+  cssVariables: {colorSchemeSelector: "data-mui-color-scheme"},
   colorSchemes: {light: true, dark: true},
 });
 
