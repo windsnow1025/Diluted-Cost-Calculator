@@ -23,8 +23,11 @@ export interface PortfolioSummary {
   closedCount: number;
   totalDilutedCost: number;
   totalMktValue: number;
+  unrealizedPnl: number;
+  realizedPnl: number;
   totalPnl: number;
   totalPnlPct: number;
+  cagrPct: number;
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

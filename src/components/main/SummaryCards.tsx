@@ -27,7 +27,7 @@ function SummaryCards() {
           <Typography variant="caption" color="text.secondary" sx={{textTransform: "uppercase", letterSpacing: 0.5}}>
             Market Value
           </Typography>
-          <Typography variant="h5" sx={{fontWeight: 700}}>
+          <Typography variant="h5" sx={{fontWeight: 700, color: pnlColor(s.unrealizedPnl)}}>
             {fmtDollar(s.totalMktValue)}
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -44,8 +44,8 @@ function SummaryCards() {
           <Typography variant="h5" sx={{fontWeight: 700, color: pnlColor(s.totalPnl)}}>
             {fmtDollar(s.totalPnl)}
           </Typography>
-          <Typography variant="body2" sx={{color: pnlColor(s.totalPnlPct)}}>
-            {fmtPct(s.totalPnlPct)}
+          <Typography variant="body2" color="text.secondary">
+            {fmtPct(s.totalPnlPct)} ({fmtPct(s.cagrPct)} CAGR)
           </Typography>
         </CardContent>
       </Card>

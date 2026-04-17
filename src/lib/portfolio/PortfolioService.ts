@@ -1,5 +1,6 @@
 import type {ActiveHolding, ClosedPosition, PortfolioRow, PortfolioSummary, Transaction} from "./Portfolio";
 import type {PricePoint} from "../prices/PriceClient";
+import {computeAvgDailyMarketValue, computeCAGR} from "./PortfolioStats";
 import dilutedCost from "../../data/diluted_cost.json";
 import priceHistory from "../../data/price_history.json";
 import prices from "../../data/prices.json";
@@ -13,7 +14,9 @@ const closedRows = rows.filter((r) => r.shares === 0);
 
 const totalMktValue = activeRows.reduce((sum, r) => sum + priceMap[r.symbol] * r.shares, 0);
 const totalDilutedCost = activeRows.reduce((sum, r) => sum + r.netDilutedCost, 0);
-const totalPnl = totalMktValue - totalDilutedCost;
+const unrealizedPnl = totalMktValue - totalDilutedCost;
+const realizedPnl = closedRows.reduce((sum, r) => sum + -r.netDilutedCost, 0);
+const totalPnl = unrealizedPnl + realizedPnl;
 
 export const activeHoldings: ActiveHolding[] = activeRows
   .map((r) => {
@@ -33,11 +36,20 @@ export const closedPositions: ClosedPosition[] = closedRows
 export const transactions = transactionsData as Transaction[];
 export const priceHistoryMap = priceHistory as Record<string, PricePoint[]>;
 
+const {avgDailyAssets, totalDays} = computeAvgDailyMarketValue(transactions, priceHistoryMap);
+const hasData = avgDailyAssets > 0;
+const periodReturn = hasData ? totalPnl / avgDailyAssets : 0;
+const totalPnlPct = periodReturn * 100;
+const cagrPct = hasData ? computeCAGR(periodReturn, totalDays) : 0;
+
 export const summary: PortfolioSummary = {
   activeCount: activeRows.length,
   closedCount: closedRows.length,
   totalDilutedCost,
   totalMktValue,
+  unrealizedPnl,
+  realizedPnl,
   totalPnl,
-  totalPnlPct: (totalPnl / totalDilutedCost) * 100,
+  totalPnlPct,
+  cagrPct,
 };
