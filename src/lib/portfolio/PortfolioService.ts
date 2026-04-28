@@ -50,6 +50,7 @@ export const summary: PortfolioSummary = {
   unrealizedPnl,
   realizedPnl,
   totalPnl,
+  avgDailyAssets,
   totalPnlPct,
   cagrPct,
 };

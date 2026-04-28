@@ -26,6 +26,7 @@ export interface PortfolioSummary {
   unrealizedPnl: number;
   realizedPnl: number;
   totalPnl: number;
+  avgDailyAssets: number;
   totalPnlPct: number;
   cagrPct: number;
 }
@@ -61,4 +62,3 @@ export interface RawTransaction {
   fees: number;
   taxWithholding: number;
 }
-

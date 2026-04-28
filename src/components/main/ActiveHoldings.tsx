@@ -9,7 +9,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
-import {activeHoldings} from "../../lib/portfolio/PortfolioService.ts";
+import {activeHoldings, summary} from "../../lib/portfolio/PortfolioService.ts";
 import {fmtDollar, fmtPct, pnlColor} from "../../lib/utils/format.ts";
 import SymbolCell from "./SymbolCell.tsx";
 import SymbolChartDialog from "./SymbolChartDialog.tsx";
@@ -20,7 +20,20 @@ function ActiveHoldings() {
   return (
     <Card variant="outlined">
       <CardContent>
-        <Typography variant="h6" sx={{mb: 2}}>Active Holdings</Typography>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-2">
+          <Typography variant="h6">Active Holdings ({activeHoldings.length})</Typography>
+          <div className="flex flex-wrap items-baseline justify-end gap-x-4 gap-y-1">
+            <Typography variant="body2" color="text.secondary">
+              Market Value: {fmtDollar(summary.totalMktValue)}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Cost: {fmtDollar(summary.totalDilutedCost)}
+            </Typography>
+            <Typography variant="subtitle1" sx={{fontWeight: 600, color: pnlColor(summary.unrealizedPnl)}}>
+              {fmtDollar(summary.unrealizedPnl)}
+            </Typography>
+          </div>
+        </div>
         <TableContainer>
           <Table size="small">
             <TableHead>
