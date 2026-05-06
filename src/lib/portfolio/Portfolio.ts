@@ -9,7 +9,7 @@ export interface ActiveHolding extends PortfolioRow {
   price: number;
   mktValue: number;
   pnl: number;
-  pnlPct: number;
+  pnlPct: number | null;
   weight: number;
 }
 

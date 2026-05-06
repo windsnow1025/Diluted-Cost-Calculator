@@ -11,6 +11,11 @@ export function computeCAGR(periodReturn: number, days: number): number {
   return (Math.pow(1 + periodReturn, 365 / days) - 1) * 100;
 }
 
+export function computePnlPct(pnl: number, netDilutedCost: number): number | null {
+  if (netDilutedCost <= 0) return null;
+  return (pnl / netDilutedCost) * 100;
+}
+
 export function computeAvgDailyMarketValue(
   transactions: Transaction[],
   priceHistoryMap: Record<string, PricePoint[]>,

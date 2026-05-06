@@ -1,6 +1,6 @@
 import type {ActiveHolding, ClosedPosition, PortfolioRow, PortfolioSummary, Transaction} from "./Portfolio";
 import type {PricePoint} from "../prices/PriceClient";
-import {computeAvgDailyMarketValue, computeCAGR} from "./PortfolioStats";
+import {computeAvgDailyMarketValue, computeCAGR, computePnlPct} from "./PortfolioStats";
 import dilutedCost from "../../data/diluted_cost.json";
 import priceHistory from "../../data/price_history.json";
 import prices from "../../data/prices.json";
@@ -23,7 +23,7 @@ export const activeHoldings: ActiveHolding[] = activeRows
     const price = priceMap[r.symbol];
     const mktValue = price * r.shares;
     const pnl = mktValue - r.netDilutedCost;
-    const pnlPct = (pnl / r.netDilutedCost) * 100;
+    const pnlPct = computePnlPct(pnl, r.netDilutedCost);
     const weight = (mktValue / totalMktValue) * 100;
     return {...r, price, mktValue, pnl, pnlPct, weight};
   })

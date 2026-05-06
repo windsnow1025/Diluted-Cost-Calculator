@@ -52,8 +52,8 @@ function ActiveHoldings() {
                 <TableRow key={h.symbol} hover>
                   <SymbolCell symbol={h.symbol} onClick={setSelectedSymbol} />
                   <TableCell align="right">{h.shares}</TableCell>
-                  <TableCell align="right" sx={{color: pnlColor(h.pnlPct)}}>
-                    {fmtPct(h.pnlPct)}
+                  <TableCell align="right" sx={{color: h.pnlPct != null ? pnlColor(h.pnlPct) : "text.secondary"}}>
+                    {h.pnlPct != null ? fmtPct(h.pnlPct) : "N/A"}
                   </TableCell>
                   <TableCell align="right" sx={{color: pnlColor(h.pnl)}}>
                     {fmtDollar(h.pnl)}
