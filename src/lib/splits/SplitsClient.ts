@@ -2,6 +2,9 @@ import YahooFinance from "yahoo-finance2";
 
 const yahooFinance = new YahooFinance();
 
+// Excludes spin-off price adjustment factors
+const MaxShareSplitTerm = 100;
+
 export interface SplitEvent {
   date: string;
   ratio: number;
@@ -15,7 +18,9 @@ export async function fetchSplits(symbols: string[]): Promise<Record<string, Spl
       interval: "1d",
       events: "split",
     });
-    const splits = chart.events?.splits ?? [];
+    const splits = (chart.events?.splits ?? []).filter(
+      (split) => split.numerator <= MaxShareSplitTerm && split.denominator <= MaxShareSplitTerm,
+    );
     if (splits.length > 0) {
       result[symbol] = splits.map((s) => ({
         date: s.date.toISOString().slice(0, 10),
