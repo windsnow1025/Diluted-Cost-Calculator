@@ -26,5 +26,5 @@ function compareTransactions(a: RawTransaction, b: RawTransaction): number {
 }
 
 export function sortTransactions(transactions: RawTransaction[]): RawTransaction[] {
-  return transactions.slice().sort(compareTransactions);
+  return transactions.toSorted(compareTransactions);
 }

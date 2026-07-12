@@ -49,10 +49,7 @@ export function computeAvgDailyMarketValue(
   }
 
   // Trades by Date
-  const tradesByDate: Record<string, Transaction[]> = {};
-  for (const tx of trades) {
-    (tradesByDate[tx.date] ??= []).push(tx);
-  }
+  const tradesByDate = Object.groupBy(trades, (tx) => tx.date);
 
   const shares: Record<string, number> = Object.fromEntries(symbols.map((s) => [s, 0]));
   let cumulative = 0;
