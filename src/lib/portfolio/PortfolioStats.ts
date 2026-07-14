@@ -16,6 +16,11 @@ export function computePnlPct(pnl: number, netDilutedCost: number): number | nul
   return (pnl / netDilutedCost) * 100;
 }
 
+export function enumerateDays(startDate: Temporal.PlainDate): string[] {
+  const totalDays = startDate.until(Temporal.Now.plainDateISO("UTC"), {largestUnit: "days"}).days + 1;
+  return Array.from({length: totalDays}, (_, d) => startDate.add({days: d}).toString());
+}
+
 export function computeLastCloseBySymbolByDate(
   symbols: string[],
   priceHistoryBySymbol: PriceHistoryBySymbol,
@@ -77,8 +82,7 @@ export function computeAvgDailyMarketValue(
   const startDate = Temporal.PlainDate.from(
     trades.map((tx) => tx.date).sort()[0],
   );
-  const totalDays = startDate.until(Temporal.Now.plainDateISO("UTC"), {largestUnit: "days"}).days + 1;
-  const days = Array.from({length: totalDays}, (_, d) => startDate.add({days: d}).toString());
+  const days = enumerateDays(startDate);
 
   const symbols = [...new Set(trades.map((tx) => tx.symbol))];
 
@@ -87,5 +91,5 @@ export function computeAvgDailyMarketValue(
   const dailyMarketValues = computeDailyMarketValues(trades, days, lastCloseBySymbolByDate);
   const cumulative = dailyMarketValues.reduce((sum, value) => sum + value, 0);
 
-  return {avgDailyAssets: cumulative / totalDays, totalDays};
+  return {avgDailyAssets: cumulative / days.length, totalDays: days.length};
 }
