@@ -39,7 +39,9 @@ export function computeAvgDailyMarketValue(
   for (const sym of symbols) {
     lastCloseByDate[sym] = {};
     const byDate: Record<string, number> = {};
-    for (const p of priceHistoryBySymbol[sym] ?? []) byDate[p.date] = p.close;
+    for (const pricePoint of priceHistoryBySymbol[sym] ?? []) {
+      byDate[pricePoint.date] = pricePoint.close
+    }
     let last = 0;
     for (let d = 0; d < totalDays; d++) {
       const dayStr = dayAt(d);
