@@ -1,5 +1,5 @@
 import type {ActiveHolding, ClosedPosition, PortfolioRow, PortfolioSummary, Transaction} from "./Portfolio";
-import type {PricePoint} from "../prices/PriceClient";
+import type {PriceHistoryMap} from "../prices/PriceClient";
 import {computeAvgDailyMarketValue, computeCAGR, computePnlPct} from "./PortfolioStats";
 import dilutedCost from "../../data/diluted_cost.json";
 import priceHistory from "../../data/price_history.json";
@@ -34,7 +34,7 @@ export const closedPositions: ClosedPosition[] = closedRows
   .sort((a, b) => b.realizedPnl - a.realizedPnl || a.symbol.localeCompare(b.symbol));
 
 export const transactions = transactionsData as Transaction[];
-export const priceHistoryMap = priceHistory as Record<string, PricePoint[]>;
+export const priceHistoryMap = priceHistory as PriceHistoryMap;
 
 const {avgDailyAssets, totalDays} = computeAvgDailyMarketValue(transactions, priceHistoryMap);
 const hasData = avgDailyAssets > 0;

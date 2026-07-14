@@ -7,7 +7,12 @@ export interface PricePoint {
   close: number;
 }
 
-export async function fetchPrices(symbols: string[]): Promise<Record<string, number>> {
+// Symbol: PricePoint
+export type PriceHistoryMap = Record<string, PricePoint[]>;
+
+export async function fetchPrices(
+  symbols: string[]
+): Promise<Record<string, number>> { // Symbol: Price
   const quotes = await yahooFinance.quote(symbols);
   const prices: Record<string, number> = {};
   for (const quote of quotes) {
@@ -20,8 +25,8 @@ export async function fetchPrices(symbols: string[]): Promise<Record<string, num
 
 export async function fetchPriceHistory(
   symbols: string[],
-): Promise<Record<string, PricePoint[]>> {
-  const history: Record<string, PricePoint[]> = {};
+): Promise<PriceHistoryMap> {
+  const history: PriceHistoryMap = {};
   for (const symbol of symbols) {
     const result = await yahooFinance.chart(symbol, {period1: 0, interval: "1d"});
     history[symbol] = result.quotes
