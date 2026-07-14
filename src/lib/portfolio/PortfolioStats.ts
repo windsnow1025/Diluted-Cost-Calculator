@@ -1,6 +1,6 @@
 import {Temporal} from "@js-temporal/polyfill";
 import {type Transaction, TransactionType} from "./Portfolio";
-import type {PriceHistoryMap} from "../prices/PriceClient";
+import type {PriceHistoryBySymbol} from "../prices/PriceClient";
 
 export interface AvgAssetStats {
   avgDailyAssets: number;
@@ -18,7 +18,7 @@ export function computePnlPct(pnl: number, netDilutedCost: number): number | nul
 
 export function computeAvgDailyMarketValue(
   transactions: Transaction[],
-  priceHistoryMap: PriceHistoryMap,
+  priceHistoryBySymbol: PriceHistoryBySymbol,
 ): AvgAssetStats {
   const trades = transactions.filter(
     (tx) => tx.type === TransactionType.Trades && tx.quantity !== undefined,
@@ -39,7 +39,7 @@ export function computeAvgDailyMarketValue(
   for (const sym of symbols) {
     lastCloseByDate[sym] = {};
     const byDate: Record<string, number> = {};
-    for (const p of priceHistoryMap[sym] ?? []) byDate[p.date] = p.close;
+    for (const p of priceHistoryBySymbol[sym] ?? []) byDate[p.date] = p.close;
     let last = 0;
     for (let d = 0; d < totalDays; d++) {
       const dayStr = dayAt(d);

@@ -2,19 +2,18 @@ import YahooFinance from "yahoo-finance2";
 
 const yahooFinance = new YahooFinance({ suppressNotices: ['yahooSurvey'] });
 
+export type PriceBySymbol = {[symbol: string]: number};
+
 export interface PricePoint {
   date: string;
   close: number;
 }
 
-// Symbol: PricePoint
-export type PriceHistoryMap = Record<string, PricePoint[]>;
+export type PriceHistoryBySymbol = {[symbol: string]: PricePoint[]};
 
-export async function fetchPrices(
-  symbols: string[]
-): Promise<Record<string, number>> { // Symbol: Price
+export async function fetchPrices(symbols: string[]): Promise<PriceBySymbol> {
   const quotes = await yahooFinance.quote(symbols);
-  const prices: Record<string, number> = {};
+  const prices: PriceBySymbol = {};
   for (const quote of quotes) {
     if (quote.regularMarketPrice !== undefined) {
       prices[quote.symbol] = quote.regularMarketPrice;
@@ -25,8 +24,8 @@ export async function fetchPrices(
 
 export async function fetchPriceHistory(
   symbols: string[],
-): Promise<PriceHistoryMap> {
-  const history: PriceHistoryMap = {};
+): Promise<PriceHistoryBySymbol> {
+  const history: PriceHistoryBySymbol = {};
   for (const symbol of symbols) {
     const result = await yahooFinance.chart(symbol, {period1: 0, interval: "1d"});
     history[symbol] = result.quotes

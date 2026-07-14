@@ -3,12 +3,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import {priceHistoryMap, transactions} from "../../lib/portfolio/PortfolioService.ts";
+import {priceHistoryBySymbol, transactions} from "../../lib/portfolio/PortfolioService.ts";
 import PriceChart from "./PriceChart.tsx";
 
 function SymbolChartDialog({symbol, onClose}: {symbol: string | null; onClose: () => void}) {
   const open = symbol !== null;
-  const history = symbol ? priceHistoryMap[symbol] ?? [] : [];
+  const history = symbol ? priceHistoryBySymbol[symbol] ?? [] : [];
   const symbolTx = symbol ? transactions.filter((tx) => tx.symbol === symbol) : [];
 
   return (
