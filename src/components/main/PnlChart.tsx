@@ -1,13 +1,18 @@
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 import {BaselineSeries, ColorType, createChart, type Time} from "lightweight-charts";
 import {useColorScheme, useTheme} from "@mui/material/styles";
 import {dailyPnlSeries} from "../../lib/portfolio/PortfolioService.ts";
 
+type PnlUnit = "$" | "%";
+
 function PnlChart() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [unit, setUnit] = useState<PnlUnit>("$");
   const theme = useTheme();
   const {mode, systemMode} = useColorScheme();
   const isDark = (mode === "system" ? systemMode : mode) === "dark";
@@ -35,10 +40,14 @@ function PnlChart() {
       topLineColor: palette.success.main,
       bottomLineColor: palette.error.main,
       lineWidth: 1,
+      priceFormat: {type: unit === "$" ? "price" : "percent"},
     });
 
     baselineSeries.setData(
-      dailyPnlSeries.map((p) => ({time: p.date as Time, value: p.pnl})),
+      dailyPnlSeries.map((p) => {
+        const value = unit === "$" ? p.pnl : p.pnlPct;
+        return value !== null ? {time: p.date as Time, value} : {time: p.date as Time};
+      }),
     );
 
     chart.timeScale().fitContent();
@@ -46,12 +55,25 @@ function PnlChart() {
     return () => {
       chart.remove();
     };
-  }, [isDark, theme]);
+  }, [unit, isDark, theme]);
 
   return (
     <Card variant="outlined">
       <CardContent>
-        <Typography variant="h6" className="mb-2">P&L History</Typography>
+        <div className="flex-between-nowrap mb-2">
+          <Typography variant="h6">P&L History</Typography>
+          <ToggleButtonGroup
+            value={unit}
+            exclusive
+            size="small"
+            onChange={(_, next: PnlUnit | null) => {
+              if (next !== null) setUnit(next);
+            }}
+          >
+            <ToggleButton value="$">$</ToggleButton>
+            <ToggleButton value="%">%</ToggleButton>
+          </ToggleButtonGroup>
+        </div>
         <div ref={containerRef} className="h-80"/>
       </CardContent>
     </Card>

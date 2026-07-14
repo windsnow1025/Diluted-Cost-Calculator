@@ -9,18 +9,17 @@ export interface AvgAssetStats {
 
 export interface DailyPnlPoint {
   date: string;
-  mktValue: number;
-  netDilutedCost: number;
   pnl: number;
+  pnlPct: number | null;
 }
 
 export function computeCAGR(periodReturn: number, days: number): number {
   return (Math.pow(1 + periodReturn, 365 / days) - 1) * 100;
 }
 
-export function computePnlPct(pnl: number, netDilutedCost: number): number | null {
-  if (netDilutedCost <= 0) return null;
-  return (pnl / netDilutedCost) * 100;
+export function computePnlPct(pnl: number, base: number): number | null {
+  if (base <= 0) return null;
+  return (pnl / base) * 100;
 }
 
 export function enumerateDays(startDate: Temporal.PlainDate): string[] {
@@ -125,13 +124,17 @@ export function computeDailyPnlSeries(
 
   const series: DailyPnlPoint[] = [];
   let netDilutedCost = 0;
+  let cumulativeMktValue = 0;
   for (let i = 0; i < days.length; i++) {
     const day = days[i];
     for (const tx of transactionsByDate[day] ?? []) {
       netDilutedCost += tx.netAmount;
     }
     const mktValue = dailyMarketValues[i];
-    series.push({date: day, mktValue, netDilutedCost, pnl: mktValue - netDilutedCost});
+    cumulativeMktValue += mktValue;
+    const pnl = mktValue - netDilutedCost;
+    const pnlPct = computePnlPct(pnl, cumulativeMktValue / (i + 1));
+    series.push({date: day, pnl, pnlPct});
   }
 
   return series;

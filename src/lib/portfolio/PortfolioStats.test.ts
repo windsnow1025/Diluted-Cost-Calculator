@@ -53,8 +53,16 @@ describe("PortfolioStats", () => {
     };
     // mktValue = [200, 200, 220, 120, 120]
     // netDilutedCost = [200, 200, 190, 70, 70]
+    // pnlPct = pnl / avg(mktValue) * 100
     const series = computeDailyPnlSeries(transactions, priceHistory);
     expect(series.map((p) => p.pnl)).toEqual([0, 0, 30, 50, 50]);
-    expect(series[4]).toEqual({date: "2020-01-05", mktValue: 120, netDilutedCost: 70, pnl: 50});
+    expect(series.map((p) => p.pnlPct)).toEqual([
+      0 / (200 / 1) * 100,
+      0 / (400 / 2) * 100,
+      30 / (620 / 3) * 100,
+      50 / (740 / 4) * 100,
+      50 / (860 / 5) * 100,
+    ]);
+    expect(series[4]).toEqual({date: "2020-01-05", pnl: 50, pnlPct: 50 / (860 / 5) * 100});
   });
 });
