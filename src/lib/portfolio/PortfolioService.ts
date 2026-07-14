@@ -1,6 +1,6 @@
 import type {ActiveHolding, ClosedPosition, PortfolioRow, PortfolioSummary, Transaction} from "./Portfolio";
 import type {PriceHistoryBySymbol, PriceBySymbol} from "../prices/PriceClient";
-import {computeAvgDailyMarketValue, computeCAGR, computePnlPct} from "./PortfolioStats";
+import {computeAvgDailyMarketValue, computeCAGR, computeDailyPnlSeries, computePnlPct, type DailyPnlPoint} from "./PortfolioStats";
 import dilutedCost from "../../data/diluted_cost.json";
 import priceHistory from "../../data/price_history.json";
 import prices from "../../data/prices.json";
@@ -35,6 +35,8 @@ export const closedPositions: ClosedPosition[] = closedRows
 
 export const transactions = transactionsData as Transaction[];
 export const priceHistoryBySymbol = priceHistory as PriceHistoryBySymbol;
+
+export const dailyPnlSeries: DailyPnlPoint[] = computeDailyPnlSeries(transactions, priceHistoryBySymbol);
 
 const {avgDailyAssets, totalDays} = computeAvgDailyMarketValue(transactions, priceHistoryBySymbol);
 const hasData = avgDailyAssets > 0;
