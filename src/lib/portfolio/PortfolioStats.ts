@@ -37,6 +37,33 @@ export function computeLastCloseBySymbolByDate(
   return lastCloseBySymbolByDate;
 }
 
+export function computeDailyMarketValues(
+  trades: Transaction[],
+  days: string[],
+  lastCloseBySymbolByDate: {[date: string]: PriceBySymbol},
+): number[] {
+  const symbols = [...new Set(trades.map((tx) => tx.symbol))];
+  const tradesByDate = Object.groupBy(trades, (tx) => tx.date);
+  const sharesBySymbol: Record<string, number> = Object.fromEntries(symbols.map((s) => [s, 0]));
+
+  const dailyMarketValues: number[] = [];
+  for (const day of days) {
+    // Shares
+    for (const tx of tradesByDate[day] ?? []) {
+      sharesBySymbol[tx.symbol] += tx.quantity!;
+    }
+
+    // Market Value
+    let dayValue = 0;
+    for (const sym of symbols) {
+      if (sharesBySymbol[sym] > 0) dayValue += sharesBySymbol[sym] * lastCloseBySymbolByDate[day][sym];
+    }
+    dailyMarketValues.push(dayValue);
+  }
+
+  return dailyMarketValues;
+}
+
 export function computeAvgDailyMarketValue(
   transactions: Transaction[],
   priceHistoryBySymbol: PriceHistoryBySymbol,
@@ -57,25 +84,8 @@ export function computeAvgDailyMarketValue(
 
   const lastCloseBySymbolByDate = computeLastCloseBySymbolByDate(symbols, priceHistoryBySymbol, days);
 
-  // Trades by Date
-  const tradesByDate = Object.groupBy(trades, (tx) => tx.date);
-
-  const sharesBySymbol: Record<string, number> = Object.fromEntries(symbols.map((s) => [s, 0]));
-  let cumulative = 0;
-
-  for (const day of days) {
-    // Shares
-    for (const tx of tradesByDate[day] ?? []) {
-      sharesBySymbol[tx.symbol] += tx.quantity!;
-    }
-
-    // Cumulative
-    let dayValue = 0;
-    for (const sym of symbols) {
-      if (sharesBySymbol[sym] > 0) dayValue += sharesBySymbol[sym] * lastCloseBySymbolByDate[day][sym];
-    }
-    cumulative += dayValue;
-  }
+  const dailyMarketValues = computeDailyMarketValues(trades, days, lastCloseBySymbolByDate);
+  const cumulative = dailyMarketValues.reduce((sum, value) => sum + value, 0);
 
   return {avgDailyAssets: cumulative / totalDays, totalDays};
 }
