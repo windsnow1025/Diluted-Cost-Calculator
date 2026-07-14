@@ -7,6 +7,13 @@ export interface AvgAssetStats {
   totalDays: number;
 }
 
+export interface DailyPnlPoint {
+  date: string;
+  mktValue: number;
+  netDilutedCost: number;
+  pnl: number;
+}
+
 export function computeCAGR(periodReturn: number, days: number): number {
   return (Math.pow(1 + periodReturn, 365 / days) - 1) * 100;
 }
@@ -92,4 +99,40 @@ export function computeAvgDailyMarketValue(
   const cumulative = dailyMarketValues.reduce((sum, value) => sum + value, 0);
 
   return {avgDailyAssets: cumulative / days.length, totalDays: days.length};
+}
+
+export function computeDailyPnlSeries(
+  transactions: Transaction[],
+  priceHistoryBySymbol: PriceHistoryBySymbol,
+): DailyPnlPoint[] {
+  if (transactions.length === 0) return [];
+
+  const startDate = Temporal.PlainDate.from(
+    transactions.map((tx) => tx.date).sort()[0],
+  );
+  const days = enumerateDays(startDate);
+
+  const trades = transactions.filter(
+    (tx) => tx.type === TransactionType.Trades && tx.quantity !== undefined,
+  );
+  const symbols = [...new Set(trades.map((tx) => tx.symbol))];
+
+  const lastCloseBySymbolByDate = computeLastCloseBySymbolByDate(symbols, priceHistoryBySymbol, days);
+
+  const dailyMarketValues = computeDailyMarketValues(trades, days, lastCloseBySymbolByDate);
+
+  const transactionsByDate = Object.groupBy(transactions, (tx) => tx.date);
+
+  const series: DailyPnlPoint[] = [];
+  let netDilutedCost = 0;
+  for (let i = 0; i < days.length; i++) {
+    const day = days[i];
+    for (const tx of transactionsByDate[day] ?? []) {
+      netDilutedCost += tx.netAmount;
+    }
+    const mktValue = dailyMarketValues[i];
+    series.push({date: day, mktValue, netDilutedCost, pnl: mktValue - netDilutedCost});
+  }
+
+  return series;
 }
