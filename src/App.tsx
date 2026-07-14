@@ -1,6 +1,7 @@
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import SummaryCards from "./components/main/SummaryCards.tsx";
+import PnlChart from "./components/main/PnlChart.tsx";
 import ActiveHoldings from "./components/main/ActiveHoldings.tsx";
 import ClosedPositions from "./components/main/ClosedPositions.tsx";
 import ThemeSwitch from "./components/common/ThemeSwitch.tsx";
@@ -23,6 +24,7 @@ function App() {
           Prices updated {fmtRelativeTime(metadata.generatedAt)}
         </Typography>
         <SummaryCards/>
+        <PnlChart/>
         <ActiveHoldings/>
         <ClosedPositions/>
       </div>

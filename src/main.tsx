@@ -5,6 +5,12 @@ import CssBaseline from '@mui/material/CssBaseline'
 import './global.css'
 import App from './App.tsx'
 
+declare module '@mui/material/styles' {
+  interface CssThemeVariables {
+    enabled: true
+  }
+}
+
 const theme = createTheme({
   cssVariables: {colorSchemeSelector: "data-mui-color-scheme"},
   colorSchemes: {light: true, dark: true},

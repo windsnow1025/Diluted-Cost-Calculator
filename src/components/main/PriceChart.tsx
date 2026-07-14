@@ -23,7 +23,7 @@ function PriceChart({priceHistory, transactions}: {priceHistory: PricePoint[]; t
     const container = containerRef.current;
     if (!container) return;
 
-    const palette = theme.palette;
+    const palette = theme.colorSchemes[isDark ? "dark" : "light"]!.palette;
     const chart = createChart(container, {
       autoSize: true,
       layout: {
@@ -34,8 +34,10 @@ function PriceChart({priceHistory, transactions}: {priceHistory: PricePoint[]; t
         vertLines: {color: palette.divider},
         horzLines: {color: palette.divider},
       },
-      rightPriceScale: {autoScale: true, mode: 1, scaleMargins: {top: 0.1, bottom: 0}},
-      timeScale: {timeVisible: false},
+      rightPriceScale: {
+        mode: 1,
+        scaleMargins: {top: 0.1, bottom: 0}
+      },
     });
     chartRef.current = chart;
 
