@@ -1,3 +1,4 @@
+import {Temporal} from "@js-temporal/polyfill";
 import YahooFinance from "yahoo-finance2";
 
 const yahooFinance = new YahooFinance({ suppressNotices: ['yahooSurvey'] });
@@ -36,4 +37,19 @@ export async function fetchPriceHistory(
       }));
   }
   return history;
+}
+
+export function overrideTodayCloses(
+  priceHistoryBySymbol: PriceHistoryBySymbol,
+  priceBySymbol: PriceBySymbol,
+): PriceHistoryBySymbol {
+  const today = Temporal.Now.plainDateISO("UTC").toString();
+  const result = {...priceHistoryBySymbol};
+  for (const [symbol, price] of Object.entries(priceBySymbol)) {
+    const history = result[symbol];
+    result[symbol] = history.at(-1)?.date === today
+      ? [...history.slice(0, -1), {date: today, close: price}]
+      : [...history, {date: today, close: price}];
+  }
+  return result;
 }

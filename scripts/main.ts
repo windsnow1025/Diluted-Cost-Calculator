@@ -5,7 +5,7 @@ import {calculateDilutedCosts} from "../src/lib/portfolio/Calculator";
 import type {RawTransaction} from "../src/lib/portfolio/Portfolio";
 import {normalizeTransaction} from "../src/lib/portfolio/TransactionNormalize";
 import {sortTransactions} from "../src/lib/portfolio/TransactionSort";
-import {fetchPrices, fetchPriceHistory} from "../src/lib/prices/PriceClient";
+import {fetchPrices, fetchPriceHistory, overrideTodayCloses} from "../src/lib/prices/PriceClient";
 import {adjustForSplits} from "../src/lib/splits/Adjuster";
 import {fetchSplits} from "../src/lib/splits/SplitsClient";
 
@@ -32,7 +32,7 @@ async function main(): Promise<void> {
   const activeSymbols = rows.filter((r) => r.shares > 0).map((r) => r.symbol);
 
   const prices = await fetchPrices(activeSymbols);
-  const priceHistory = await fetchPriceHistory(allSymbols);
+  const priceHistory = overrideTodayCloses(await fetchPriceHistory(allSymbols), prices);
 
   writeFileSync(PricesFile, JSON.stringify(prices, null, 2));
   writeFileSync(PriceHistoryFile, JSON.stringify(priceHistory, null, 2));
