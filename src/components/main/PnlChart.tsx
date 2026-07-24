@@ -4,9 +4,9 @@ import CardContent from "@mui/material/CardContent";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
-import {BaselineSeries, ColorType, createChart, type Time} from "lightweight-charts";
+import {BaselineSeries, ColorType, createChart, LineSeries, type Time} from "lightweight-charts";
 import {useColorScheme, useTheme} from "@mui/material/styles";
-import {dailyPnlSeries} from "../../lib/portfolio/PortfolioService.ts";
+import {benchmarkPctSeries, dailyPnlSeries} from "../../lib/portfolio/PortfolioService.ts";
 
 type PnlUnit = "$" | "%";
 
@@ -44,11 +44,25 @@ function PnlChart() {
     });
 
     baselineSeries.setData(
-      dailyPnlSeries.map((p) => {
-        const value = unit === "$" ? p.pnl : p.pnlPct;
-        return value !== null ? {time: p.date as Time, value} : {time: p.date as Time};
+      dailyPnlSeries.map((dailyPnlPoint) => {
+        const value = unit === "$" ? dailyPnlPoint.pnl : dailyPnlPoint.pnlPct;
+        return value !== null ? {time: dailyPnlPoint.date as Time, value} : {time: dailyPnlPoint.date as Time};
       }),
     );
+
+    if (unit === "%") {
+      const benchmarkSeries = chart.addSeries(LineSeries, {
+        color: palette.info.main,
+        lineWidth: 1,
+        title: "S&P 500",
+        priceFormat: {type: "percent"},
+      });
+      benchmarkSeries.setData(
+        benchmarkPctSeries.map((benchmarkPoint) =>
+          benchmarkPoint.pct !== null ? {time: benchmarkPoint.date as Time, value: benchmarkPoint.pct} : {time: benchmarkPoint.date as Time},
+        ),
+      );
+    }
 
     chart.timeScale().fitContent();
 

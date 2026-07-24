@@ -2,6 +2,8 @@ import {Temporal} from "@js-temporal/polyfill";
 import {type Transaction, TransactionType} from "./Portfolio";
 import type {PriceBySymbol, PriceHistoryBySymbol} from "../prices/PriceClient";
 
+export const BenchmarkSymbol = "^GSPC";
+
 export interface AvgAssetStats {
   avgDailyAssets: number;
   totalDays: number;
@@ -11,6 +13,11 @@ export interface DailyPnlPoint {
   date: string;
   pnl: number;
   pnlPct: number | null;
+}
+
+export interface BenchmarkPoint {
+  date: string;
+  pct: number | null;
 }
 
 export function computeCAGR(periodReturn: number, days: number): number {
@@ -135,6 +142,31 @@ export function computeDailyPnlSeries(
     const pnl = mktValue - netDilutedCost;
     const pnlPct = computePnlPct(pnl, cumulativeMktValue / (i + 1));
     series.push({date: day, pnl, pnlPct});
+  }
+
+  return series;
+}
+
+export function computeBenchmarkPctSeries(
+  transactions: Transaction[],
+  priceHistoryBySymbol: PriceHistoryBySymbol,
+  benchmarkSymbol: string,
+): BenchmarkPoint[] {
+  if (transactions.length === 0) return [];
+
+  const startDate = Temporal.PlainDate.from(
+    transactions.map((tx) => tx.date).sort()[0],
+  );
+  const days = enumerateDays(startDate);
+
+  const lastCloseBySymbolByDate = computeLastCloseBySymbolByDate([benchmarkSymbol], priceHistoryBySymbol, days);
+
+  const series: BenchmarkPoint[] = [];
+  let base = 0;
+  for (const day of days) {
+    const close = lastCloseBySymbolByDate[day][benchmarkSymbol];
+    if (base === 0) base = close;
+    series.push({date: day, pct: computePnlPct(close - base, base)});
   }
 
   return series;

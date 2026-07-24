@@ -1,5 +1,5 @@
 import {afterAll, beforeAll, describe, expect, it, vi} from "vitest";
-import {computeAvgDailyMarketValue, computeCAGR, computeDailyPnlSeries} from "./PortfolioStats";
+import {computeAvgDailyMarketValue, computeBenchmarkPctSeries, computeCAGR, computeDailyPnlSeries} from "./PortfolioStats";
 import {TransactionType, type Transaction} from "./Portfolio";
 
 describe("PortfolioStats", () => {
@@ -64,5 +64,27 @@ describe("PortfolioStats", () => {
       50 / (860 / 5) * 100,
     ]);
     expect(series[4]).toEqual({date: "2020-01-05", pnl: 50, pnlPct: 50 / (860 / 5) * 100});
+  });
+
+  it("computeBenchmarkPctSeries", () => {
+    vi.setSystemTime(new Date("2020-01-04T00:00:00Z"));
+    const transactions: Transaction[] = [{
+      date: "2020-01-01", platform: "X", type: TransactionType.Trades, symbol: "A",
+      quantity: 1, price: 100, amount: 100, fees: 0, taxWithholding: 0, netAmount: 100,
+    }];
+    const priceHistory = {
+      B: [
+        {date: "2020-01-02", close: 1000},
+        {date: "2020-01-04", close: 1250},
+      ],
+    };
+    // base = 1000 (first close on or after start); pct = (close / base - 1) * 100
+    const series = computeBenchmarkPctSeries(transactions, priceHistory, "B");
+    expect(series).toEqual([
+      {date: "2020-01-01", pct: null},
+      {date: "2020-01-02", pct: 0},
+      {date: "2020-01-03", pct: 0},
+      {date: "2020-01-04", pct: 25},
+    ]);
   });
 });

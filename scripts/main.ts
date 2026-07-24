@@ -3,6 +3,7 @@ import {resolve} from "node:path";
 import transactionsData from "../src/data/transactions_raw.json";
 import {calculateDilutedCosts} from "../src/lib/portfolio/Calculator";
 import type {RawTransaction} from "../src/lib/portfolio/Portfolio";
+import {BenchmarkSymbol} from "../src/lib/portfolio/PortfolioStats";
 import {normalizeTransaction} from "../src/lib/portfolio/TransactionNormalize";
 import {sortTransactions} from "../src/lib/portfolio/TransactionSort";
 import {fetchPrices, fetchPriceHistory, overrideTodayCloses} from "../src/lib/prices/PriceClient";
@@ -31,8 +32,8 @@ async function main(): Promise<void> {
 
   const activeSymbols = rows.filter((r) => r.shares > 0).map((r) => r.symbol);
 
-  const prices = await fetchPrices(activeSymbols);
-  const priceHistory = overrideTodayCloses(await fetchPriceHistory(allSymbols), prices);
+  const prices = await fetchPrices([...activeSymbols, BenchmarkSymbol]);
+  const priceHistory = overrideTodayCloses(await fetchPriceHistory([...allSymbols, BenchmarkSymbol]), prices);
 
   writeFileSync(PricesFile, JSON.stringify(prices, null, 2));
   writeFileSync(PriceHistoryFile, JSON.stringify(priceHistory, null, 2));
