@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from "react";
+import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import ToggleButton from "@mui/material/ToggleButton";
@@ -54,7 +55,6 @@ function PnlChart() {
       const benchmarkSeries = chart.addSeries(LineSeries, {
         color: palette.info.main,
         lineWidth: 1,
-        title: "S&P 500",
         priceFormat: {type: "percent"},
       });
       benchmarkSeries.setData(
@@ -88,7 +88,15 @@ function PnlChart() {
             <ToggleButton value="%">%</ToggleButton>
           </ToggleButtonGroup>
         </div>
-        <div ref={containerRef} className="h-80"/>
+        <div className="relative h-80">
+          <div ref={containerRef} className="h-full"/>
+          {unit === "%" && (
+            <div className="pointer-events-none absolute left-2 top-2 z-10 flex items-center gap-1.5">
+              <Box className="h-2 w-2 rounded-full" sx={{bgcolor: "info.main"}}/>
+              <Typography variant="caption" color="text.secondary">S&P 500</Typography>
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
