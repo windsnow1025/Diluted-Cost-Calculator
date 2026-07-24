@@ -13,11 +13,16 @@ export interface SplitEvent {
 export async function fetchSplits(symbols: string[]): Promise<Record<string, SplitEvent[]>> {
   const result: Record<string, SplitEvent[]> = {};
   for (const symbol of symbols) {
-    const chart = await yahooFinance.chart(symbol, {
-      period1: 0,
-      interval: "1d",
-      events: "split",
-    });
+    let chart;
+    try {
+      chart = await yahooFinance.chart(symbol, {
+        period1: 0,
+        interval: "1d",
+        events: "split",
+      });
+    } catch (error) {
+      throw new Error(`${symbol}: ${error instanceof Error ? error.message : String(error)}`);
+    }
     const splits = (chart.events?.splits ?? []).filter(
       (split) => split.numerator <= MaxShareSplitTerm && split.denominator <= MaxShareSplitTerm,
     );

@@ -39,4 +39,9 @@ async function main(): Promise<void> {
   writeFileSync(MetadataFile, JSON.stringify({generatedAt: new Date().toISOString()}, null, 2));
 }
 
-await main();
+try {
+  await main();
+} catch (error) {
+  console.error(error instanceof Error ? error.message : error);
+  process.exitCode = 1;
+}

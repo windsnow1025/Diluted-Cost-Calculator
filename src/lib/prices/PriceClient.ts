@@ -28,7 +28,12 @@ export async function fetchPriceHistory(
 ): Promise<PriceHistoryBySymbol> {
   const history: PriceHistoryBySymbol = {};
   for (const symbol of symbols) {
-    const result = await yahooFinance.chart(symbol, {period1: 0, interval: "1d"});
+    let result;
+    try {
+      result = await yahooFinance.chart(symbol, {period1: 0, interval: "1d"});
+    } catch (error) {
+      throw new Error(`${symbol}: ${error instanceof Error ? error.message : String(error)}`);
+    }
     history[symbol] = result.quotes
       .filter((q) => q.close !== null)
       .map((q) => ({
