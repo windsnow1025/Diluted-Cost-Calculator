@@ -5,14 +5,14 @@ import ContrastIcon from "@mui/icons-material/Contrast";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 
-const themeCycle = ["system", "dark", "light"] as const;
+const ThemeCycle = ["system", "dark", "light"] as const;
 
 function ThemeSwitch() {
   const {mode, setMode} = useColorScheme();
 
   const nextMode = () => {
-    const currentIndex = themeCycle.indexOf(mode ?? "system");
-    const next = themeCycle[(currentIndex + 1) % themeCycle.length];
+    const currentIndex = ThemeCycle.indexOf(mode ?? "system");
+    const next = ThemeCycle[(currentIndex + 1) % ThemeCycle.length];
     setMode(next);
   };
 
