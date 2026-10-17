@@ -1,11 +1,11 @@
-import {type PortfolioRow, type Transaction, TransactionType} from "./Portfolio";
+import {type Position, type Transaction, TransactionType} from "./Portfolio";
 
 interface Accumulator {
   shares: number;
   netDilutedCost: number;
 }
 
-export function calculateDilutedCosts(transactions: Transaction[]): PortfolioRow[] {
+export function calculateDilutedCosts(transactions: Transaction[]): Position[] {
   const symbols = new Map<string, Accumulator>();
 
   for (const tx of transactions) {
@@ -22,7 +22,7 @@ export function calculateDilutedCosts(transactions: Transaction[]): PortfolioRow
     acc.netDilutedCost += tx.netAmount;
   }
 
-  const results: PortfolioRow[] = [];
+  const results: Position[] = [];
   for (const symbol of [...symbols.keys()].sort()) {
     const acc = symbols.get(symbol)!;
     const dilutedCostPerShare = acc.shares !== 0 ? acc.netDilutedCost / acc.shares : null;

@@ -113,14 +113,14 @@ export function computeSummary(
   priceBySymbol: PriceBySymbol,
   priceHistoryBySymbol: PriceHistoryBySymbol,
 ): PortfolioSummary {
-  const rows = calculateDilutedCosts(transactions);
-  const activeRows = rows.filter((r) => r.shares > 0);
-  const closedRows = rows.filter((r) => r.shares === 0);
+  const positions = calculateDilutedCosts(transactions);
+  const activePositions = positions.filter((p) => p.shares > 0);
+  const closedPositions = positions.filter((p) => p.shares === 0);
 
-  const totalMktValue = activeRows.reduce((sum, r) => sum + priceBySymbol[r.symbol] * r.shares, 0);
-  const totalDilutedCost = activeRows.reduce((sum, r) => sum + r.netDilutedCost, 0);
+  const totalMktValue = activePositions.reduce((sum, p) => sum + priceBySymbol[p.symbol] * p.shares, 0);
+  const totalDilutedCost = activePositions.reduce((sum, p) => sum + p.netDilutedCost, 0);
   const unrealizedPnl = totalMktValue - totalDilutedCost;
-  const realizedPnl = closedRows.reduce((sum, r) => sum + -r.netDilutedCost, 0);
+  const realizedPnl = closedPositions.reduce((sum, p) => sum + -p.netDilutedCost, 0);
   const totalPnl = unrealizedPnl + realizedPnl;
 
   const {avgDailyAssets, totalDays} = computeAvgDailyMarketValue(transactions, priceHistoryBySymbol);
@@ -130,8 +130,8 @@ export function computeSummary(
   const cagrPct = hasData ? computeCAGR(periodReturn, totalDays) : 0;
 
   return {
-    activeCount: activeRows.length,
-    closedCount: closedRows.length,
+    activeCount: activePositions.length,
+    closedCount: closedPositions.length,
     totalDilutedCost,
     totalMktValue,
     unrealizedPnl,

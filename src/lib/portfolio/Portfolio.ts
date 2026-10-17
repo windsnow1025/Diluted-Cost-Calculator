@@ -1,11 +1,11 @@
-export interface PortfolioRow {
+export interface Position {
   symbol: string;
   shares: number;
   netDilutedCost: number;
   dilutedCostPerShare: number | null;
 }
 
-export interface ActiveHolding extends PortfolioRow {
+export interface ActiveHolding extends Position {
   price: number;
   mktValue: number;
   pnl: number;

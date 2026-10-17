@@ -1,4 +1,4 @@
-import type {ActiveHolding, ClosedPosition, PlatformSummary, PortfolioRow, PortfolioSummary, Transaction} from "./Portfolio";
+import type {ActiveHolding, ClosedPosition, PlatformSummary, PortfolioSummary, Position, Transaction} from "./Portfolio";
 import type {PriceHistoryBySymbol, PriceBySymbol} from "../prices/PriceClient";
 import {BenchmarkSymbol, computeBenchmarkPctSeries, computeDailyPnlSeries, computePnlPct, computeSummary, type BenchmarkPoint, type DailyPnlPoint} from "./PortfolioStats";
 import dilutedCost from "../../data/diluted_cost.json";
@@ -7,10 +7,7 @@ import prices from "../../data/prices.json";
 import transactionsData from "../../data/transactions.json";
 
 const priceBySymbol: PriceBySymbol = prices;
-const rows: PortfolioRow[] = dilutedCost;
-
-const activeRows = rows.filter((r) => r.shares > 0);
-const closedRows = rows.filter((r) => r.shares === 0);
+const positions: Position[] = dilutedCost;
 
 export const transactions = transactionsData as Transaction[];
 export const priceHistoryBySymbol = priceHistory as PriceHistoryBySymbol;
@@ -26,19 +23,21 @@ export const platformSummaries: PlatformSummary[] = Map.groupBy(transactions, (t
   .toArray()
   .sort((a, b) => b.summary.totalMktValue - a.summary.totalMktValue || a.platform.localeCompare(b.platform));
 
-export const activeHoldings: ActiveHolding[] = activeRows
-  .map((r) => {
-    const price = priceBySymbol[r.symbol];
-    const mktValue = price * r.shares;
-    const pnl = mktValue - r.netDilutedCost;
-    const pnlPct = computePnlPct(pnl, r.netDilutedCost);
+export const activeHoldings: ActiveHolding[] = positions
+  .filter((p) => p.shares > 0)
+  .map((p) => {
+    const price = priceBySymbol[p.symbol];
+    const mktValue = price * p.shares;
+    const pnl = mktValue - p.netDilutedCost;
+    const pnlPct = computePnlPct(pnl, p.netDilutedCost);
     const weight = (mktValue / summary.totalMktValue) * 100;
-    return {...r, price, mktValue, pnl, pnlPct, weight};
+    return {...p, price, mktValue, pnl, pnlPct, weight};
   })
   .sort((a, b) => b.mktValue - a.mktValue || a.symbol.localeCompare(b.symbol));
 
-export const closedPositions: ClosedPosition[] = closedRows
-  .map((r) => ({symbol: r.symbol, realizedPnl: -r.netDilutedCost}))
+export const closedPositions: ClosedPosition[] = positions
+  .filter((p) => p.shares === 0)
+  .map((p) => ({symbol: p.symbol, realizedPnl: -p.netDilutedCost}))
   .sort((a, b) => b.realizedPnl - a.realizedPnl || a.symbol.localeCompare(b.symbol));
 
 export const dailyPnlSeries: DailyPnlPoint[] = computeDailyPnlSeries(transactions, priceHistoryBySymbol);

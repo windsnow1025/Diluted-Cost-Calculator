@@ -27,10 +27,10 @@ async function main(): Promise<void> {
   const transactions = adjustForSplits(rawTransactions.map(normalizeTransaction), splitsBySymbol);
   writeFileSync(TransactionsFile, JSON.stringify(transactions, null, 2));
 
-  const rows = calculateDilutedCosts(transactions);
-  writeFileSync(DilutedCostFile, JSON.stringify(rows, null, 2));
+  const positions = calculateDilutedCosts(transactions);
+  writeFileSync(DilutedCostFile, JSON.stringify(positions, null, 2));
 
-  const activeSymbols = rows.filter((r) => r.shares > 0).map((r) => r.symbol);
+  const activeSymbols = positions.filter((p) => p.shares > 0).map((p) => p.symbol);
 
   const prices = await fetchPrices([...activeSymbols, BenchmarkSymbol]);
   const priceHistory = overrideTodayCloses(await fetchPriceHistory([...allSymbols, BenchmarkSymbol]), prices);
