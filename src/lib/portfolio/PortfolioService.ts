@@ -1,4 +1,4 @@
-import type {ActiveHolding, ClosedPosition, PortfolioRow, PortfolioSummary, Transaction} from "./Portfolio";
+import type {ActiveHolding, ClosedPosition, PlatformSummary, PortfolioRow, PortfolioSummary, Transaction} from "./Portfolio";
 import type {PriceHistoryBySymbol, PriceBySymbol} from "../prices/PriceClient";
 import {BenchmarkSymbol, computeBenchmarkPctSeries, computeDailyPnlSeries, computePnlPct, computeSummary, type BenchmarkPoint, type DailyPnlPoint} from "./PortfolioStats";
 import dilutedCost from "../../data/diluted_cost.json";
@@ -16,6 +16,15 @@ export const transactions = transactionsData as Transaction[];
 export const priceHistoryBySymbol = priceHistory as PriceHistoryBySymbol;
 
 export const summary: PortfolioSummary = computeSummary(transactions, priceBySymbol, priceHistoryBySymbol);
+
+export const platformSummaries: PlatformSummary[] = Map.groupBy(transactions, (tx) => tx.platform)
+  .entries()
+  .map(([platform, platformTransactions]) => ({
+    platform,
+    summary: computeSummary(platformTransactions, priceBySymbol, priceHistoryBySymbol),
+  }))
+  .toArray()
+  .sort((a, b) => b.summary.totalMktValue - a.summary.totalMktValue || a.platform.localeCompare(b.platform));
 
 export const activeHoldings: ActiveHolding[] = activeRows
   .map((r) => {
