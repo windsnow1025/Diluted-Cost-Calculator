@@ -1,5 +1,6 @@
 import {Temporal} from "@js-temporal/polyfill";
-import {type Transaction, TransactionType} from "./Portfolio";
+import {calculateDilutedCosts} from "./Calculator";
+import {type PortfolioSummary, type Transaction, TransactionType} from "./Portfolio";
 import type {PriceBySymbol, PriceHistoryBySymbol} from "../prices/PriceClient";
 
 export const BenchmarkSymbol = "^GSPC";
@@ -105,6 +106,41 @@ export function computeAvgDailyMarketValue(
   const cumulative = dailyMarketValues.reduce((sum, value) => sum + value, 0);
 
   return {avgDailyAssets: cumulative / days.length, totalDays: days.length};
+}
+
+export function computeSummary(
+  transactions: Transaction[],
+  priceBySymbol: PriceBySymbol,
+  priceHistoryBySymbol: PriceHistoryBySymbol,
+): PortfolioSummary {
+  const rows = calculateDilutedCosts(transactions);
+  const activeRows = rows.filter((r) => r.shares > 0);
+  const closedRows = rows.filter((r) => r.shares === 0);
+
+  const totalMktValue = activeRows.reduce((sum, r) => sum + priceBySymbol[r.symbol] * r.shares, 0);
+  const totalDilutedCost = activeRows.reduce((sum, r) => sum + r.netDilutedCost, 0);
+  const unrealizedPnl = totalMktValue - totalDilutedCost;
+  const realizedPnl = closedRows.reduce((sum, r) => sum + -r.netDilutedCost, 0);
+  const totalPnl = unrealizedPnl + realizedPnl;
+
+  const {avgDailyAssets, totalDays} = computeAvgDailyMarketValue(transactions, priceHistoryBySymbol);
+  const hasData = avgDailyAssets > 0;
+  const periodReturn = hasData ? totalPnl / avgDailyAssets : 0;
+  const totalPnlPct = periodReturn * 100;
+  const cagrPct = hasData ? computeCAGR(periodReturn, totalDays) : 0;
+
+  return {
+    activeCount: activeRows.length,
+    closedCount: closedRows.length,
+    totalDilutedCost,
+    totalMktValue,
+    unrealizedPnl,
+    realizedPnl,
+    totalPnl,
+    avgDailyAssets,
+    totalPnlPct,
+    cagrPct,
+  };
 }
 
 export function computeDailyPnlSeries(
