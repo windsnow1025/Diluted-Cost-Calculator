@@ -72,7 +72,7 @@ function PnlChart() {
   }, [unit, isDark, theme]);
 
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{transition: "border-color 0.2s", "&:hover": {borderColor: "text.primary"}}}>
       <CardContent>
         <div className="flex-between-nowrap mb-2">
           <Typography variant="h6">P&L History</Typography>

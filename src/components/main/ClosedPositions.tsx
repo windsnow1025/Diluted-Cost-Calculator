@@ -18,7 +18,7 @@ function ClosedPositions() {
   const totalRealizedPnl = closedPositions.reduce((sum, p) => sum + p.realizedPnl, 0);
 
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{transition: "border-color 0.2s", "&:hover": {borderColor: "text.primary"}}}>
       <CardContent>
         <div className="flex items-baseline justify-between mb-2">
           <Typography variant="h6">Closed Positions ({closedPositions.length})</Typography>

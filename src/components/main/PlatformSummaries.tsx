@@ -12,7 +12,7 @@ import {fmtDollar, fmtPct, pnlColor} from "../../lib/utils/format.ts";
 
 function PlatformSummaries() {
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{transition: "border-color 0.2s", "&:hover": {borderColor: "text.primary"}}}>
       <CardContent>
         <Typography variant="h6" className="mb-2">
           Platforms ({platformSummaries.length})

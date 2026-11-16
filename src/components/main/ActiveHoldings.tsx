@@ -18,7 +18,7 @@ function ActiveHoldings() {
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
 
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{transition: "border-color 0.2s", "&:hover": {borderColor: "text.primary"}}}>
       <CardContent>
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-2">
           <Typography variant="h6">Active Holdings ({activeHoldings.length})</Typography>
