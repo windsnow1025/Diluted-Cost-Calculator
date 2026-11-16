@@ -14,9 +14,9 @@ function PlatformSummaries() {
   return (
     <Card variant="outlined" sx={{transition: "border-color 0.2s", "&:hover": {borderColor: "text.primary"}}}>
       <CardContent>
-        <Typography variant="h6" className="mb-2">
-          Platforms ({platformSummaries.length})
-        </Typography>
+        <div className="mb-2">
+          <Typography variant="h6">Platforms ({platformSummaries.length})</Typography>
+        </div>
         <TableContainer>
           <Table size="small">
             <TableHead>
